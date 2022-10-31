@@ -59,6 +59,12 @@ func getSerialPorts() ([]*enumerator.PortDetails, error) {
 	return serialPorts, err
 }
 
+func sendSerialData(port serial.Port, data string) (int, error) {
+	// シリアル通信でデータを送信する
+	n, err := port.Write([]byte(data + "\n\r"))
+	return n, err
+}
+
 func main(){
 	// ポートをすべてスキャンし、指定されたVIDとPIDを持つポートを返す
 	ports, err := getSerialPorts()
@@ -81,8 +87,7 @@ func main(){
 	}
 
 	for {
-		// シリアル通信でデータを送信する
-		n, err := port.Write([]byte("abc" + "\n\r"))
+		n, err := sendSerialData(port, "Hello World!")
 		if err != nil {
 			log.Fatal(err)
 		}
