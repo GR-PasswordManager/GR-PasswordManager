@@ -1,3 +1,5 @@
+github.com/codahale/sss v0.0.0-20160501174526-0cb9f6d3f7f1 h1:PJJtqFbZH8ZW9PtsfB+ALZKVPRiRwNbPrNe+gliLpGo=
+github.com/codahale/sss v0.0.0-20160501174526-0cb9f6d3f7f1/go.mod h1:0Vm/twPonvi1fkJ3kW8TbuttPQ4EyspL1xHUVr1I3uU=
 github.com/creack/goselect v0.1.2 h1:2DNy14+JPjRBgPzAd1thbQp4BSIihxcBf0IXhQXDRa0=
 github.com/creack/goselect v0.1.2/go.mod h1:a/NhLweNvqIYMuxcMOuWY516Cimucms3DglDzQP3hKY=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
