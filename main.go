@@ -5,8 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/codahale/sss"
+	"github.com/joho/godotenv"
 
 	"github.com/GR-PasswordManager/GR-PasswordManager/cmd/gr"
 )
@@ -25,7 +25,7 @@ func main(){
 	switch env {
 		case "terminal":
 			gr.Terminal()
-		case "dev":
+		case "dev-sss":
 			// 開発用
 			n := 5
 			k := 3
