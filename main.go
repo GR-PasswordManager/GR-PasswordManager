@@ -61,6 +61,49 @@ func main(){
 			}
 			log.Printf("ciphertext decrypted: %s\n", string(plaintext))
 
+		case "dev-se":
+			// 開発用
+			// 分散したシェアを更に楕円曲線暗号にて暗号化し、通信の際に暗号化されたシェアを送信する
+			// 送信されたシェアを復号化し、各デバイスで保存する。(デバイスへの転送は別途実装する)
+			// 複合時に再度結合する
+
+			// 分散シェアの生成
+			n := 5
+			k := 3
+			secret := "secret"
+			shares, err := sss.Split(byte(n), byte(k), []byte(secret))
+			if err != nil {
+				panic(err)
+			}
+			fmt.Println(shares)
+
+			// 分散シェアの暗号化
+			key, err := ecies.GenerateKey()
+			if err != nil {
+				panic(err)
+			}
+			log.Println("key pair has been generated")
+
+			share := shares[1]
+			ciphertext, err := ecies.Encrypt(key.PublicKey, []byte(share))
+			if err != nil {
+				panic(err)
+			}
+			log.Printf("plaintext encrypted: %v\n", ciphertext)
+
+			// 分散シェアの復号化
+			plaintext, err := ecies.Decrypt(key, ciphertext)
+			if err != nil {
+				panic(err)
+			}
+			log.Printf("ciphertext decrypted: %s\n", string(plaintext))
+
+			// 分散シェアの結合
+			shares[1] = plaintext
+			recov := sss.Combine(shares)
+			fmt.Println(recov)
+			fmt.Println(string(recov))
+
 		default:
 			log.Fatal("Error: No mode selected")
 	}
