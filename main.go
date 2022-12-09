@@ -71,37 +71,21 @@ func main(){
 			n := 5
 			k := 3
 			secret := "secret"
-			shares, err := sss.Split(byte(n), byte(k), []byte(secret))
-			if err != nil {
-				panic(err)
-			}
-			fmt.Println(shares)
 
-			// 分散シェアの暗号化
-			key, err := ecies.GenerateKey()
-			if err != nil {
-				panic(err)
-			}
-			log.Println("key pair has been generated")
-
-			share := shares[1]
-			ciphertext, err := ecies.Encrypt(key.PublicKey, []byte(share))
-			if err != nil {
-				panic(err)
-			}
-			log.Printf("plaintext encrypted: %v\n", ciphertext)
+			privatekeys, shares := gr.Encrypt(n, k, secret, nil)
 
 			// 分散シェアの復号化
-			plaintext, err := ecies.Decrypt(key, ciphertext)
-			if err != nil {
-				panic(err)
+			plain_shares := map[byte][]byte{}
+			for i := 0; i < n; i++ {
+				plain_shares[byte(i+1)], err = ecies.Decrypt(privatekeys[i], shares[i])
+				if err != nil {
+					panic(err)
+				}
+				log.Println("ciphertext decrypted: ", plain_shares[byte(i+1)])
 			}
-			log.Printf("ciphertext decrypted: %s\n", string(plaintext))
 
 			// 分散シェアの結合
-			shares[1] = plaintext
-			recov := sss.Combine(shares)
-			fmt.Println(recov)
+			recov := sss.Combine(plain_shares)
 			fmt.Println(string(recov))
 
 		default:
