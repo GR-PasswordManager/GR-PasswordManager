@@ -74,19 +74,8 @@ func main(){
 
 			privatekeys, shares := gr.Encrypt(n, k, secret, nil)
 
-			// 分散シェアの復号化
-			plain_shares := map[byte][]byte{}
-			for i := 0; i < n; i++ {
-				plain_shares[byte(i+1)], err = ecies.Decrypt(privatekeys[i], shares[i])
-				if err != nil {
-					panic(err)
-				}
-				log.Println("ciphertext decrypted: ", plain_shares[byte(i+1)])
-			}
-
-			// 分散シェアの結合
-			recov := sss.Combine(plain_shares)
-			fmt.Println(string(recov))
+			recov := gr.Decrypt(shares, privatekeys)
+			fmt.Println(recov)
 
 		default:
 			log.Fatal("Error: No mode selected")

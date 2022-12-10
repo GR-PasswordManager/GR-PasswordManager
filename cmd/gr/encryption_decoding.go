@@ -42,3 +42,21 @@ func Encrypt(n int, k int, secret string, publickeys map[byte]*ecies.PublicKey) 
 
 	return keys, encrypted_share
 }
+
+func Decrypt(shares map[byte][]byte, privatekeys map[byte]*ecies.PrivateKey) string {
+	plain_shares := map[byte][]byte{}
+	err := error(nil)
+
+	// 分散シェアの復号化
+	for i := 1; i <= len(shares); i++ {
+		plain_shares[byte(i)], err = ecies.Decrypt(privatekeys[byte(i)], shares[byte(i)])
+		if err != nil {
+			panic(err)
+		}
+		log.Println("ciphertext decrypted: ", plain_shares[byte(i)])
+	}
+
+	// 分散シェアの結合
+	recov := sss.Combine(plain_shares)
+	return string(recov)
+}
