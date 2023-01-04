@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/aes"
 	"fmt"
 	"log"
 	"os"
@@ -61,21 +62,48 @@ func main(){
 			}
 			log.Printf("ciphertext decrypted: %s\n", string(plaintext))
 
-		case "dev-se":
+		case "dev-shares":
 			// 開発用
-			// 分散したシェアを更に楕円曲線暗号にて暗号化し、通信の際に暗号化されたシェアを送信する
-			// 送信されたシェアを復号化し、各デバイスで保存する。(デバイスへの転送は別途実装する)
-			// 複合時に再度結合する
+			// ターミナルからの入力を受け取り、AESによる暗号化し分散、各デバイスに転送可能な状態にする。
+			// また、複合・結合を行い、ターミナルに出力する。
 
 			// 分散シェアの生成
 			n := 5
 			k := 3
-			secret := "secret"
+			secret := ""
 
-			privatekeys, shares := gr.Encrypt(n, k, secret, nil)
+			fmt.Print("Input secret:")
+			fmt.Scan(&secret)
 
-			recov := gr.Decrypt(shares, privatekeys)
-			fmt.Println(recov)
+			keys := map[byte]*ecies.PrivateKey{}
+			publickeys := map[byte]*ecies.PublicKey{}
+			for i := 1; i <= n; i++ {
+				keys[byte(i)], err = ecies.GenerateKey()
+				if err != nil {
+					panic(err)
+				}
+				publickeys[byte(i)] = keys[byte(i)].PublicKey
+			}
+
+			block, err := aes.NewCipher([]byte("12345678901234561234567890123456"))
+			if err != nil {
+				panic(err)
+			}
+
+			shares := gr.Encrypt(n, k, []byte(secret), block, publickeys)
+
+			// 分散シェアの復号化
+			plain_shares := map[byte][]byte{}
+			for i := 1; i <= len(shares); i++ {
+				plain_shares[byte(i)], err = ecies.Decrypt(keys[byte(i)], shares[byte(i)])
+				if err != nil {
+					panic(err)
+				}
+				log.Println("ciphertext decrypted: ", plain_shares[byte(i)])
+			}
+
+			decrypt_text := gr.Decrypt(plain_shares, block)
+			log.Println(string(decrypt_text))
 
 		default:
 			log.Fatal("Error: No mode selected")
