@@ -68,8 +68,8 @@ func main(){
 			// また、複合・結合を行い、ターミナルに出力する。
 
 			// 分散シェアの生成
-			n := 5
 			k := 3
+			n := 5
 			secret := ""
 
 			fmt.Print("Input secret:")
@@ -90,7 +90,7 @@ func main(){
 				panic(err)
 			}
 
-			shares := gr.Encrypt(n, k, []byte(secret), block, publickeys)
+			shares := gr.Encrypt(k, n, []byte(secret), block, publickeys)
 
 			// 分散シェアの復号化
 			plain_shares := map[byte][]byte{}

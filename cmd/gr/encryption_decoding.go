@@ -11,7 +11,7 @@ import (
 	ecies "github.com/ecies/go/v2"
 )
 
-func Encrypt(n int, k int, secret []byte, block cipher.Block, publickeys map[byte]*ecies.PublicKey) (map[byte][]byte) {
+func Encrypt(k int, n int, secret []byte, block cipher.Block, publickeys map[byte]*ecies.PublicKey) (map[byte][]byte) {
 
 	// chipherがない場合はエラー
 	if block == nil {
