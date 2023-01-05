@@ -11,6 +11,12 @@ import (
 	ecies "github.com/ecies/go/v2"
 )
 
+// 暗号化
+// k: 分散シェアの最小数
+// n: 分散シェアの総数
+// secret: 暗号化するデータ
+// block: AES暗号化に使用するブロック
+// publickeys: 公開鍵
 func Encrypt(k int, n int, secret []byte, block cipher.Block, publickeys map[byte]*ecies.PublicKey) (map[byte][]byte) {
 
 	// chipherがない場合はエラー
@@ -57,6 +63,9 @@ func Encrypt(k int, n int, secret []byte, block cipher.Block, publickeys map[byt
 	return encrypted_share
 }
 
+// 復号化
+// shares: 分散シェア
+// block: AES暗号化に使用するブロック
 func Decrypt(shares map[byte][]byte, block cipher.Block) []byte {
 	log.Println(shares)
 
