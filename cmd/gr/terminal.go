@@ -35,7 +35,7 @@ func getSerialPorts() ([]*enumerator.PortDetails, error) {
 	// 指定されたVIDとPIDを持つポートを探す
 	var serialPorts []*enumerator.PortDetails
 	for _, port := range ports {
-		fmt.Printf("Found port: %s\n", port.Name)
+		fmt.Printf("Found port: %s(VID:%s, PID:%s)\n", port.Name, port.VID, port.PID)
 		// 接続されているポートがUSBポートであるかどうか
 		if port.IsUSB {
 			// VIDとPIDが一致するかどうか
