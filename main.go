@@ -31,6 +31,10 @@ func main(){
 	switch env {
 		case "terminal":
 			gr.Terminal()
+
+		case "dongle":
+			gr.Dongle()
+
 		case "dev-sss":
 			// 開発用
 			n := 5
