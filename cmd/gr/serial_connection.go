@@ -33,6 +33,7 @@ func getSerialPorts(VID string, PID string) ([]*enumerator.PortDetails, error) {
 		fmt.Printf("Found port: %s(VID:%s, PID:%s)\n", port.Name, port.VID, port.PID)
 		// 接続されているポートがUSBポートであるかどうか
 		if port.IsUSB {
+			fmt.Printf("Is USB port!\n")
 			// VIDとPIDが一致するかどうか
 			if port.VID == VID && port.PID == PID || VID == "" && PID == ""{
 				serialPorts = append(serialPorts, port)
