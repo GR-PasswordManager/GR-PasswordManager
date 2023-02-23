@@ -31,17 +31,13 @@ func getSerialPorts(VID string, PID string) ([]*enumerator.PortDetails, error) {
 	var serialPorts []*enumerator.PortDetails
 	for _, port := range ports {
 		fmt.Printf("Found port: %s(VID:%s, PID:%s)\n", port.Name, port.VID, port.PID)
-		// 接続されているポートがUSBポートであるかどうか
-		if port.IsUSB {
-			fmt.Printf("Is USB port!\n")
-			// VIDとPIDが一致するかどうか
-			if port.VID == VID && port.PID == PID || VID == "" && PID == ""{
-				serialPorts = append(serialPorts, port)
-				fmt.Printf("Found Arduino!\n")
-				fmt.Printf("   Name       %s\n", port.Name)
-				fmt.Printf("   USB ID     %s:%s\n", port.VID, port.PID)
-				fmt.Printf("   USB serial %s\n", port.SerialNumber)
-			}
+		// VIDとPIDが一致するかどうか
+		if port.VID == VID && port.PID == PID || VID == "" && PID == ""{
+			serialPorts = append(serialPorts, port)
+			fmt.Printf("Found!\n")
+			fmt.Printf("   Name       %s\n", port.Name)
+			fmt.Printf("    ID        %s:%s\n", port.VID, port.PID)
+			fmt.Printf("   USB serial %s\n", port.SerialNumber)
 		}
 	}
 
