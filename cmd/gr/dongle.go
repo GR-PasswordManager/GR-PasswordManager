@@ -29,7 +29,7 @@ func Dongle(){
 		log.Fatal(err)
 	}
 
-	str := "[start]" // 何かしらの文字列を入れておく
+	str := "" // 何かしらの文字列を入れておく
 	re := regexp.MustCompile(`\[.+?\]`)
 	for {
 		for !re.MatchString(str) {
