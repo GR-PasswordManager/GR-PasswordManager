@@ -31,11 +31,13 @@ func Dongle(){
 
 	str := "[start]" // 何かしらの文字列を入れておく
 	re := regexp.MustCompile(`\[.+?\]`)
-	for re.MatchString(str) {
-		// シリアル通信でデータを受信する
-		str, err := receiveSerialData(port)
-		if err != nil {
-			log.Fatal(err)
+	for {
+		for !re.MatchString(str) {
+			// シリアル通信でデータを受信する
+			str, err = receiveSerialData(port)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 
 		switch re.FindString(str) {
