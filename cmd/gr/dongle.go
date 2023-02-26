@@ -29,7 +29,7 @@ func Dongle(){
 		log.Fatal(err)
 	}
 
-	str := ""
+	str := "[start]" // 何かしらの文字列を入れておく
 	re := regexp.MustCompile(`\[.+?\]`)
 	for re.MatchString(str) {
 		// シリアル通信でデータを受信する
