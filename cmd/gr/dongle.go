@@ -75,6 +75,7 @@ func Dongle(){
 				// 受信したデータの出力
 				fmt.Printf("D_Received data: '%q'EOF\n", re.FindAllString(str, -1))
 		}
+		str = ""
 	}
 
 	// シリアルポートを閉じる
