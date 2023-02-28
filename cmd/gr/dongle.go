@@ -23,6 +23,8 @@ func Dongle(){
 		StopBits: serial.OneStopBit,
 	}
 
+	fmt.Printf("%sポートを指定して開きます\n", ports[0].Name)
+
 	// シリアルポートを開く
 	port, err := serial.Open(ports[0].Name, mode)
 	if err != nil {
@@ -31,6 +33,9 @@ func Dongle(){
 
 	str := "" // 何かしらの文字列を入れておく
 	re := regexp.MustCompile(`\[.+?\]`)
+
+	fmt.Printf("START:%s", ports[0].Name)
+
 	for {
 		for !re.MatchString(str) {
 			// シリアル通信でデータを受信する
@@ -43,21 +48,21 @@ func Dongle(){
 		switch re.FindString(str) {
 			case "[who]":
 				// シリアル通信でデータを送信する
-				_, err = sendSerialData(port, "[dongle]")
+				_, err = sendSerialData(port, "[dongle]\n")
 				if err != nil {
 					log.Fatal(err)
 				}
 
 			case "[test]":
 				// シリアル通信でデータを送信する
-				_, err = sendSerialData(port, "[test_d]")
+				_, err = sendSerialData(port, "[test_d]\n")
 				if err != nil {
 					log.Fatal(err)
 				}
 
 			case "[quit]":
 				// シリアル通信でデータを送信する
-				_, err = sendSerialData(port, "[quit]")
+				_, err = sendSerialData(port, "[quit]\n")
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -65,7 +70,7 @@ func Dongle(){
 
 			default:
 				// 受信したデータの出力
-				fmt.Printf("Received data: %s", re.FindAllString(str, -1))
+				fmt.Printf("D_Received data: '%s'EOF\n", re.FindAllString(str, -1))
 		}
 	}
 

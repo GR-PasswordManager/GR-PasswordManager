@@ -29,6 +29,8 @@ func Terminal(){
 		StopBits: serial.OneStopBit,
 	}
 
+	fmt.Printf("%sポートを指定して開きます\n", ports[0].Name)
+
 	// シリアルポートを開く
 	port, err := serial.Open(ports[0].Name, mode)
 	if err != nil {
@@ -38,9 +40,11 @@ func Terminal(){
 	re := regexp.MustCompile(`\[.+?\]`)
 	str := ""
 
+	fmt.Printf("START:%s", ports[0].Name)
+
 	for re.FindString(str) != "[dongle]" {
 		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, "[who]")
+		_, err = sendSerialData(port, "[who]\n")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -52,10 +56,10 @@ func Terminal(){
 		}
 
 		// 受信したデータの出力
-		fmt.Printf("Received data: %s", str)
+		fmt.Printf("T_Received data: '%s'EOF\n", str)
 	}
 
-	sendStr := [...] string{"[test]", "[abc]"}
+	sendStr := [...] string{"[test]\n", "[abc]\n"}
 	for i := 0; i <= 1; i++ {
 		// シリアル通信でデータを送信する
 		_, err = sendSerialData(port, sendStr[i])
@@ -74,12 +78,12 @@ func Terminal(){
 		}
 
 		// 受信したデータの出力
-		fmt.Printf("Received data: %s", str)
+		fmt.Printf("T_Received data: '%s'\n", str)
 	}
 
 	for re.FindString(str) != "[quit]" {
 		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, "[quit]")
+		_, err = sendSerialData(port, "[quit]\n")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -91,7 +95,7 @@ func Terminal(){
 		}
 
 		// 受信したデータの出力
-		fmt.Printf("Received data: %s", str)
+		fmt.Printf("T_Received data: '%s'EOF\n", str)
 	}
 
 	// シリアルポートを閉じる

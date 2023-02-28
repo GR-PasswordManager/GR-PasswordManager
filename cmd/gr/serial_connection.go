@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"go.bug.st/serial"
 	"go.bug.st/serial/enumerator"
@@ -52,6 +53,9 @@ func getSerialPorts(VID string, PID string) ([]*enumerator.PortDetails, error) {
 }
 
 func sendSerialData(port serial.Port, data string) (int, error) {
+	// 送信するデータの出力
+	fmt.Printf("Sending data: '%s'EOF\n", data)
+
 	// シリアル通信でデータを送信する
 	n, err := port.Write([]byte(data + "\n\r"))
 	return n, err
@@ -60,6 +64,8 @@ func sendSerialData(port serial.Port, data string) (int, error) {
 func receiveSerialData(port serial.Port) (string, error) {
 	// 受信したデータの全体を格納する変数
 	data := ""
+
+	port.SetReadTimeout(500 * time.Millisecond)
 
 	// 受信するデータのバッファ先を作成する
 	buff := make([]byte, 4)
@@ -71,7 +77,6 @@ func receiveSerialData(port serial.Port) (string, error) {
 		}
 		// もし、データがなければループを抜ける
 		if n == 0 {
-			fmt.Println("\nEOF")
 			break
 		}
 
@@ -83,5 +88,8 @@ func receiveSerialData(port serial.Port) (string, error) {
 			break
 		}
 	}
+
+	// 受信したデータの出力
+	fmt.Printf("Received data: '%s'EOF\n", data)
 	return data, nil
 }
