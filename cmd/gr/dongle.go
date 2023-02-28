@@ -56,6 +56,13 @@ func Dongle(){
 					log.Fatal(err)
 				}
 
+			case "[abc]":
+				// シリアル通信でデータを送信する
+				_, err = sendSerialData(port, "[abc_d]")
+				if err != nil {
+					log.Fatal(err)
+				}
+
 			case "[quit]":
 				// シリアル通信でデータを送信する
 				_, err = sendSerialData(port, "[quit]")
