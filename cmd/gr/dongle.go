@@ -9,12 +9,6 @@ import (
 )
 
 func Dongle(){
-	// ポートをすべてスキャンし、指定されたVIDとPIDを持つポートを返す
-	ports, err := getSerialPorts("", "")
-	if err != nil {
-		log.Fatal(err)
-	}
-
 	// シリアルポートの設定を行う
 	mode := &serial.Mode{
 		BaudRate: 9600,
@@ -23,10 +17,12 @@ func Dongle(){
 		StopBits: serial.OneStopBit,
 	}
 
-	fmt.Printf("%sポートを指定して開きます\n", ports[0].Name)
+	port_name := "/dev/ttyGS0"
+
+	fmt.Printf("%sポートを指定して開きます\n", port_name)
 
 	// シリアルポートを開く
-	port, err := serial.Open(ports[0].Name, mode)
+	port, err := serial.Open(port_name, mode)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -34,7 +30,7 @@ func Dongle(){
 	str := "" // 何かしらの文字列を入れておく
 	re := regexp.MustCompile(`\[.+?\]`)
 
-	fmt.Printf("START:%s", ports[0].Name)
+	fmt.Printf("START:%q", port_name)
 
 	for {
 		for !re.MatchString(str) {
