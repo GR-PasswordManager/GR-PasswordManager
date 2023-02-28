@@ -32,51 +32,52 @@ func Dongle(){
 
 	fmt.Printf("START:%q", port_name)
 
-	for {
-		for !re.MatchString(str) {
-			// シリアル通信でデータを受信する
-			str, err = receiveSerialData(port)
-			if err != nil {
-				log.Fatal(err)
+	quit:
+		for {
+			for !re.MatchString(str) {
+				// シリアル通信でデータを受信する
+				str, err = receiveSerialData(port)
+				if err != nil {
+					log.Fatal(err)
+				}
 			}
+
+			switch re.FindString(str) {
+				case "[who]":
+					// シリアル通信でデータを送信する
+					_, err = sendSerialData(port, "[dongle]")
+					if err != nil {
+						log.Fatal(err)
+					}
+
+				case "[test]":
+					// シリアル通信でデータを送信する
+					_, err = sendSerialData(port, "[test_d]")
+					if err != nil {
+						log.Fatal(err)
+					}
+
+				case "[abc]":
+					// シリアル通信でデータを送信する
+					_, err = sendSerialData(port, "[abc_d]")
+					if err != nil {
+						log.Fatal(err)
+					}
+
+				case "[quit]":
+					// シリアル通信でデータを送信する
+					_, err = sendSerialData(port, "[quit]")
+					if err != nil {
+						log.Fatal(err)
+					}
+					break quit
+
+				default:
+					// 受信したデータの出力
+					fmt.Printf("D_Received data: '%q'EOF\n", re.FindAllString(str, -1))
+			}
+			str = ""
 		}
-
-		switch re.FindString(str) {
-			case "[who]":
-				// シリアル通信でデータを送信する
-				_, err = sendSerialData(port, "[dongle]")
-				if err != nil {
-					log.Fatal(err)
-				}
-
-			case "[test]":
-				// シリアル通信でデータを送信する
-				_, err = sendSerialData(port, "[test_d]")
-				if err != nil {
-					log.Fatal(err)
-				}
-
-			case "[abc]":
-				// シリアル通信でデータを送信する
-				_, err = sendSerialData(port, "[abc_d]")
-				if err != nil {
-					log.Fatal(err)
-				}
-
-			case "[quit]":
-				// シリアル通信でデータを送信する
-				_, err = sendSerialData(port, "[quit]")
-				if err != nil {
-					log.Fatal(err)
-				}
-				break
-
-			default:
-				// 受信したデータの出力
-				fmt.Printf("D_Received data: '%q'EOF\n", re.FindAllString(str, -1))
-		}
-		str = ""
-	}
 
 	// シリアルポートを閉じる
 	err = port.Close()
