@@ -54,7 +54,7 @@ func getSerialPorts(VID string, PID string) ([]*enumerator.PortDetails, error) {
 
 func sendSerialData(port serial.Port, data string) (int, error) {
 	// 送信するデータの出力
-	fmt.Printf("Sending data: '%s'EOF\n", data)
+	fmt.Printf("Sending data: '%q'EOF\n", data)
 
 	// シリアル通信でデータを送信する
 	n, err := port.Write([]byte(data + "\n\r"))
@@ -65,10 +65,10 @@ func receiveSerialData(port serial.Port) (string, error) {
 	// 受信したデータの全体を格納する変数
 	data := ""
 
-	port.SetReadTimeout(500 * time.Millisecond)
+	port.SetReadTimeout(1000 * time.Millisecond)
 
 	// 受信するデータのバッファ先を作成する
-	buff := make([]byte, 4)
+	buff := make([]byte, 8)
 	for {
 		// 作成したバッファ分のデータを受信する
 		n, err := port.Read(buff)
@@ -77,6 +77,7 @@ func receiveSerialData(port serial.Port) (string, error) {
 		}
 		// もし、データがなければループを抜ける
 		if n == 0 {
+			fmt.Println("取得したデータが空です")
 			break
 		}
 
@@ -85,11 +86,12 @@ func receiveSerialData(port serial.Port) (string, error) {
 
 		// 受信したデータに"\n"が含まれていたらループを抜ける
 		if strings.Contains(string(buff[:n]), "\n") {
+			fmt.Println("改行を検出")
 			break
 		}
 	}
 
 	// 受信したデータの出力
-	fmt.Printf("Received data: '%s'EOF\n", data)
+	fmt.Printf("Received data: '%q'EOF\n", data)
 	return data, nil
 }

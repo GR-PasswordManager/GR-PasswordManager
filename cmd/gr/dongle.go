@@ -44,21 +44,21 @@ func Dongle(){
 		switch re.FindString(str) {
 			case "[who]":
 				// シリアル通信でデータを送信する
-				_, err = sendSerialData(port, "[dongle]\n")
+				_, err = sendSerialData(port, "[dongle]")
 				if err != nil {
 					log.Fatal(err)
 				}
 
 			case "[test]":
 				// シリアル通信でデータを送信する
-				_, err = sendSerialData(port, "[test_d]\n")
+				_, err = sendSerialData(port, "[test_d]")
 				if err != nil {
 					log.Fatal(err)
 				}
 
 			case "[quit]":
 				// シリアル通信でデータを送信する
-				_, err = sendSerialData(port, "[quit]\n")
+				_, err = sendSerialData(port, "[quit]")
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -66,7 +66,7 @@ func Dongle(){
 
 			default:
 				// 受信したデータの出力
-				fmt.Printf("D_Received data: '%s'EOF\n", re.FindAllString(str, -1))
+				fmt.Printf("D_Received data: '%q'EOF\n", re.FindAllString(str, -1))
 		}
 	}
 

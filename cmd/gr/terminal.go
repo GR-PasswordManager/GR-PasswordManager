@@ -40,7 +40,7 @@ func Terminal(){
 	re := regexp.MustCompile(`\[.+?\]`)
 	str := ""
 
-	fmt.Printf("START:%s", ports[0].Name)
+	fmt.Printf("START:%q", ports[0].Name)
 
 	for re.FindString(str) != "[dongle]" {
 		// シリアル通信でデータを送信する
@@ -56,10 +56,10 @@ func Terminal(){
 		}
 
 		// 受信したデータの出力
-		fmt.Printf("T_Received data: '%s'EOF\n", str)
+		fmt.Printf("T_Received data: '%q'EOF\n", str)
 	}
 
-	sendStr := [...] string{"[test]\n", "[abc]\n"}
+	sendStr := [...] string{"[test]", "[abc]"}
 	for i := 0; i <= 1; i++ {
 		// シリアル通信でデータを送信する
 		_, err = sendSerialData(port, sendStr[i])
@@ -78,12 +78,12 @@ func Terminal(){
 		}
 
 		// 受信したデータの出力
-		fmt.Printf("T_Received data: '%s'\n", str)
+		fmt.Printf("T_Received data: '%q'\n", str)
 	}
 
 	for re.FindString(str) != "[quit]" {
 		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, "[quit]\n")
+		_, err = sendSerialData(port, "[quit]")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -95,7 +95,7 @@ func Terminal(){
 		}
 
 		// 受信したデータの出力
-		fmt.Printf("T_Received data: '%s'EOF\n", str)
+		fmt.Printf("T_Received data: '%q'EOF\n", str)
 	}
 
 	// シリアルポートを閉じる
