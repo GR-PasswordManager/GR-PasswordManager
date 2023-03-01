@@ -40,25 +40,25 @@ func Terminal(){
 
 	fmt.Printf("START:%q", ports[0].Name)
 
-	checkSendSerialData(port, "[who]")
+	checkSendSerialData(port, "who")
 	str = checkReceiveSerialData(port)
-	if str != "[dongle]" {
+	if str != "dongle" {
 		log.Fatal("Dongle not found")
 	}
 
 	// SAVE
-	checkSendSerialData(port, "[save]")
+	checkSendSerialData(port, "save")
 	checkSendSerialData(port, "1")
 	checkSendSerialData(port, "share_abcdef")
 
 	// PICK
-	checkSendSerialData(port, "[pick]")
+	checkSendSerialData(port, "pick")
 	checkSendSerialData(port, "1")
 	str = checkReceiveSerialData(port)
 	log.Printf("PICK:%q", str)
 
 	// QUIT
-	checkSendSerialData(port, "[quit]")
+	checkSendSerialData(port, "quit")
 	// シリアルポートを閉じる
 	err = port.Close()
 	if err != nil {

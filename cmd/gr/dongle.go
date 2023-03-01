@@ -51,11 +51,11 @@ func Dongle(){
 			}
 
 			switch re.FindString(str) {
-				case "[who]":
+				case "who":
 					// シリアル通信でデータを送信する
-					checkSendSerialData(port, "[dongle]")
+					checkSendSerialData(port, "dongle")
 
-				case "[save]":
+				case "save":
 
 					// シェア名の受信
 					share_name := checkReceiveSerialData(port)
@@ -74,7 +74,7 @@ func Dongle(){
 
 					log.Println("save complete")
 
-				case "[pick]":
+				case "pick":
 					// シェア名の受信
 					share_name := checkReceiveSerialData(port)
 
@@ -110,7 +110,7 @@ func Dongle(){
 
 					log.Println("pick complete")
 
-				case "[quit]":
+				case "quit":
 					break quit
 
 				default:

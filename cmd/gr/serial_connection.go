@@ -3,6 +3,7 @@ package gr
 import (
 	"errors"
 	"log"
+	"regexp"
 	"strings"
 	"time"
 
@@ -52,6 +53,8 @@ func getSerialPorts(VID string, PID string) ([]*enumerator.PortDetails, error) {
 }
 
 func sendSerialData(port serial.Port, data string) (int, error) {
+	data = "[" + data + "]"
+
 	// 送信するデータの出力
 	log.Printf("Sending data: %q\n", data)
 
@@ -63,6 +66,8 @@ func sendSerialData(port serial.Port, data string) (int, error) {
 func receiveSerialData(port serial.Port) (string, error) {
 	// 受信したデータの全体を格納する変数
 	data := ""
+
+	re := regexp.MustCompile(`\[(.+?)\]`)
 
 	port.SetReadTimeout(1000 * time.Millisecond)
 
@@ -86,9 +91,16 @@ func receiveSerialData(port serial.Port) (string, error) {
 		// 受信したデータに"\n"が含まれていたらループを抜ける
 		if strings.Contains(string(buff[:n]), "\n") {
 			log.Println("改行を検出")
-			break
+			if re.MatchString(data) {
+				log.Println("正規表現にマッチしました")
+				break
+			}
 		}
 	}
+
+	data = re.FindString(data)
+	data = strings.Replace(data, "[", "", -1)
+	data = strings.Replace(data, "]", "", -1)
 
 	// 受信したデータの出力
 	log.Printf("Received data: %q\n", data)
@@ -97,6 +109,7 @@ func receiveSerialData(port serial.Port) (string, error) {
 
 func checkSendSerialData(port serial.Port, data string) {
 	str := ""
+	re := regexp.MustCompile(`\[(.+?)\]`)
 
 	for data != ("c_" + str) {
 		// シリアル通信でデータを送信する
@@ -111,8 +124,12 @@ func checkSendSerialData(port serial.Port, data string) {
 			log.Fatal(err)
 		}
 
-		log.Printf("str: %s\n", str)
-		log.Printf("data: %s\n", data)
+		str = re.FindString(str)
+		str = strings.Replace(str, "[", "", -1)
+		str = strings.Replace(str, "]", "", -1)
+
+		log.Printf("str: %q\n", str)
+		log.Printf("data: %q\n", data)
 	}
 
 	// シリアル通信でデータを送信する
