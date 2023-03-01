@@ -66,7 +66,7 @@ func receiveSerialData(port serial.Port) (string, error) {
 
 	re := regexp.MustCompile(`\[(.+?)\]`)
 
-	port.SetReadTimeout(1000 * time.Millisecond)
+	port.SetReadTimeout(500 * time.Millisecond)
 
 	// 受信するデータのバッファ先を作成する
 	buff := make([]byte, 8)
