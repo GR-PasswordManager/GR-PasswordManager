@@ -54,7 +54,7 @@ func getSerialPorts(VID string, PID string) ([]*enumerator.PortDetails, error) {
 
 func sendSerialData(port serial.Port, data string) (int, error) {
 	// 送信するデータの出力
-	fmt.Printf("Sending data: '%q'EOF\n", data)
+	fmt.Printf("Sending data: %q\n", data)
 
 	// シリアル通信でデータを送信する
 	n, err := port.Write([]byte(data + "\n\r"))
@@ -92,6 +92,56 @@ func receiveSerialData(port serial.Port) (string, error) {
 	}
 
 	// 受信したデータの出力
-	fmt.Printf("Received data: '%q'EOF\n", data)
+	fmt.Printf("Received data: %q\n", data)
 	return data, nil
+}
+
+func checkSendSerialData(port serial.Port, data string) {
+	str := ""
+
+	for (data + "\n\r") != ("c_" + str) {
+		// シリアル通信でデータを送信する
+		_, err := sendSerialData(port, data)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// シリアル通信でデータを受信する
+		str, err = receiveSerialData(port)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	// シリアル通信でデータを送信する
+	_, err := sendSerialData(port, "OK")
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func checkReceiveSerialData(port serial.Port) (string) {
+	check := ""
+	str := ""
+
+	for check != "OK" {
+		// シリアル通信でデータを受信する
+		str, err := receiveSerialData(port)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// シリアル通信でデータを送信する
+		_, err = sendSerialData(port, "c_" + str)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// シリアル通信でデータを受信する
+		check, err = receiveSerialData(port)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return str
 }

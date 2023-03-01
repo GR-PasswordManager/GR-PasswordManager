@@ -47,55 +47,20 @@ func Dongle(){
 		for {
 			for !re.MatchString(str) {
 				// シリアル通信でデータを受信する
-				str, err = receiveSerialData(port)
-				if err != nil {
-					log.Fatal(err)
-				}
+				str = checkReceiveSerialData(port)
 			}
 
 			switch re.FindString(str) {
 				case "[who]":
 					// シリアル通信でデータを送信する
-					_, err = sendSerialData(port, "[dongle]")
-					if err != nil {
-						log.Fatal(err)
-					}
+					checkSendSerialData(port, "[dongle]")
 
 				case "[save]":
-					str = ""
-					for !re.MatchString(str) {
-						// シリアル通信でデータを送信する
-						_, err = sendSerialData(port, "[input_share_name]")
-						if err != nil {
-							log.Fatal(err)
-						}
 
-						// シリアル通信でデータを受信する
-						str, err = receiveSerialData(port)
-						if err != nil {
-							log.Fatal(err)
-						}
-					}
+					// シェア名の受信
+					share_name := checkReceiveSerialData(port)
+					share_data := checkReceiveSerialData(port)
 
-					// 受信したシェア名の確定
-					share_name := re.FindString(str)
-
-					str = ""
-					for !re.MatchString(str) {
-						// シリアル通信でデータを送信する
-						_, err = sendSerialData(port, "[input_share_data]")
-						if err != nil {
-							log.Fatal(err)
-						}
-
-						// シリアル通信でデータを受信する
-						str, err = receiveSerialData(port)
-						if err != nil {
-							log.Fatal(err)
-						}
-					}
-
-					share_data := re.FindString(str)
 					log.Printf("share_name:%s", share_name)
 
 					// 受信したデータのファイルへの書き込み
@@ -107,41 +72,11 @@ func Dongle(){
 
 					file.Write([]byte(share_data))
 
-					str = ""
-					for !re.MatchString(str) {
-						// シリアル通信でデータを送信する
-						_, err = sendSerialData(port, share_data)
-						if err != nil {
-							log.Fatal(err)
-						}
-
-						// シリアル通信でデータを受信する
-						str, err = receiveSerialData(port)
-						if err != nil {
-							log.Fatal(err)
-						}
-					}
-
 					log.Println("save complete")
 
 				case "[pick]":
-					str = ""
-					for !re.MatchString(str) {
-						// シリアル通信でデータを送信する
-						_, err = sendSerialData(port, "[input_share_name]")
-						if err != nil {
-							log.Fatal(err)
-						}
-
-						// シリアル通信でデータを受信する
-						str, err = receiveSerialData(port)
-						if err != nil {
-							log.Fatal(err)
-						}
-					}
-
-					// 受信したシェア名の確定
-					share_name := re.FindString(str)
+					// シェア名の受信
+					share_name := checkReceiveSerialData(port)
 
 					// 受信した名前のシェアファイルを開く
 					share := []byte{}
@@ -176,11 +111,6 @@ func Dongle(){
 					log.Println("pick complete")
 
 				case "[quit]":
-					// シリアル通信でデータを送信する
-					_, err = sendSerialData(port, "[quit]")
-					if err != nil {
-						log.Fatal(err)
-					}
 					break quit
 
 				default:

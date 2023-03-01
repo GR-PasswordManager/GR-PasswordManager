@@ -3,7 +3,6 @@ package gr
 import (
 	"fmt"
 	"log"
-	"regexp"
 
 	"go.bug.st/serial"
 )
@@ -37,139 +36,29 @@ func Terminal(){
 		log.Fatal(err)
 	}
 
-	re := regexp.MustCompile(`\[.+?\]`)
 	str := ""
 
 	fmt.Printf("START:%q", ports[0].Name)
 
-	for re.FindString(str) != "[dongle]" {
-		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, "[who]\n")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// シリアル通信でデータを受信する
-		str, err = receiveSerialData(port)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// 受信したデータの出力
-		fmt.Printf("T_Received data: '%q'EOF\n", str)
+	checkSendSerialData(port, "[who]")
+	str = checkReceiveSerialData(port)
+	if str != "[dongle]" {
+		log.Fatal("Dongle not found")
 	}
 
 	// SAVE
-	str = ""
-	for !re.MatchString(str) {
-		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, "[save]")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// シリアル通信でデータを受信する
-		str, err = receiveSerialData(port)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	str = ""
-	for !re.MatchString(str) {
-		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, "[1]")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// シリアル通信でデータを受信する
-		str, err = receiveSerialData(port)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	str = ""
-	for !re.MatchString(str) {
-		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, "[share_abcdef]")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// シリアル通信でデータを受信する
-		str, err = receiveSerialData(port)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	log.Printf("SAVE:%q", str)
-
-	// シリアル通信でデータを送信する
-	_, err = sendSerialData(port, "[save_complete]")
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkSendSerialData(port, "[save]")
+	checkSendSerialData(port, "1")
+	checkSendSerialData(port, "share_abcdef")
 
 	// PICK
-
-	str = ""
-	for !re.MatchString(str) {
-		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, "[pick]")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// シリアル通信でデータを受信する
-		str, err = receiveSerialData(port)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	str = ""
-	for !re.MatchString(str) {
-		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, "[1]")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// シリアル通信でデータを受信する
-		str, err = receiveSerialData(port)
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
-
+	checkSendSerialData(port, "[pick]")
+	checkSendSerialData(port, "1")
+	str = checkReceiveSerialData(port)
 	log.Printf("PICK:%q", str)
 
-	// シリアル通信でデータを送信する
-	_, err = sendSerialData(port, "[pick_complete]")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for re.FindString(str) != "[quit]" {
-		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, "[quit]")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// シリアル通信でデータを受信する
-		str, err = receiveSerialData(port)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// 受信したデータの出力
-		fmt.Printf("T_Received data: '%q'EOF\n", str)
-	}
-
+	// QUIT
+	checkSendSerialData(port, "[quit]")
 	// シリアルポートを閉じる
 	err = port.Close()
 	if err != nil {
