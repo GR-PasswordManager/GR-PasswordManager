@@ -41,6 +41,7 @@ func Terminal(){
 	fmt.Printf("START:%q", ports[0].Name)
 
 	checkSendSerialData(port, "who")
+	log.Println("who_receive")
 	str = checkReceiveSerialData(port)
 	if str != "dongle" {
 		log.Fatal("Dongle not found")

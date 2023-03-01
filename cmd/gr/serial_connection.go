@@ -150,6 +150,8 @@ func checkReceiveSerialData(port serial.Port) (string) {
 		}
 
 		if str == "OK" {
+			log.Printf("prev_str: %q\n", prev_str)
+			log.Printf("str: %q\n", str)
 			return prev_str
 		}
 
