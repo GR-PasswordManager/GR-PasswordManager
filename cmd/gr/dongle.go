@@ -46,11 +46,8 @@ func Dongle(){
 			// シリアル通信でデータを受信する
 			str = checkReceiveSerialData(port)
 
-			log.Printf("str_dongle:%s", str)
-
 			switch str {
 				case "who":
-					log.Println("who")
 					// シリアル通信でデータを送信する
 					checkSendSerialData(port, "dongle")
 
@@ -61,6 +58,7 @@ func Dongle(){
 					share_data := checkReceiveSerialData(port)
 
 					log.Printf("share_name:%s", share_name)
+					log.Printf("share_data:%s", share_data)
 
 					// 受信したデータのファイルへの書き込み
 					file, err := os.Create(dir + "/" + share_name + ".share")
@@ -76,6 +74,8 @@ func Dongle(){
 				case "pick":
 					// シェア名の受信
 					share_name := checkReceiveSerialData(port)
+
+					log.Printf("share_name:%s", share_name)
 
 					// 受信した名前のシェアファイルを開く
 					share := []byte{}

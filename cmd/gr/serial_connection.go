@@ -53,10 +53,7 @@ func getSerialPorts(VID string, PID string) ([]*enumerator.PortDetails, error) {
 }
 
 func sendSerialData(port serial.Port, data string) (int, error) {
-	data = "[" + data + "]"
-
-	// 送信するデータの出力
-	log.Printf("Sending data: %q\n", data)
+	data = "[" + data + "]" // データの前後に"["と"]"を付ける
 
 	// シリアル通信でデータを送信する
 	n, err := port.Write([]byte(data + "\n\r"))
@@ -81,7 +78,6 @@ func receiveSerialData(port serial.Port) (string, error) {
 		}
 		// もし、データがなければループを抜ける
 		if n == 0 {
-			log.Println("取得したデータが空です")
 			break
 		}
 
@@ -90,28 +86,24 @@ func receiveSerialData(port serial.Port) (string, error) {
 
 		// 受信したデータに"\n"が含まれていたらループを抜ける
 		if strings.Contains(string(buff[:n]), "\n") {
-			log.Println("改行を検出")
 			if re.MatchString(data) {
-				log.Println("正規表現にマッチしました")
 				break
 			}
 		}
 	}
 
+	// 受信したデータの前後の"["と"]"を削除する
 	data = re.FindString(data)
 	data = strings.Replace(data, "[", "", -1)
 	data = strings.Replace(data, "]", "", -1)
 
-	// 受信したデータの出力
-	log.Printf("Received data: %q\n", data)
 	return data, nil
 }
 
 func checkSendSerialData(port serial.Port, data string) {
 	str := ""
-	check := "tmp"
 
-	for check != str {
+	for ("c_" + data) != str {
 		// シリアル通信でデータを送信する
 		_, err := sendSerialData(port, data)
 		if err != nil {
@@ -123,10 +115,6 @@ func checkSendSerialData(port serial.Port, data string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		log.Printf("str: %q\n", str)
-		log.Printf("data: %q\n", data)
-		check = "c_" + data
 	}
 
 	// シリアル通信でデータを送信する
@@ -134,6 +122,8 @@ func checkSendSerialData(port serial.Port, data string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Printf("Send data: %q\n", data)
 }
 
 func checkReceiveSerialData(port serial.Port) (string) {
@@ -150,8 +140,7 @@ func checkReceiveSerialData(port serial.Port) (string) {
 		}
 
 		if str == "OK" {
-			log.Printf("prev_str: %q\n", prev_str)
-			log.Printf("str: %q\n", str)
+			log.Printf("Received data: %q\n", prev_str)
 			return prev_str
 		}
 
