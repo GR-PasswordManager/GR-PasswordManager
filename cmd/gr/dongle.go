@@ -36,7 +36,9 @@ func Dongle(){
 	dir := "share"
 	err = os.Mkdir(dir, 0777)
 	if err != nil {
-		panic(err)
+		if !os.IsExist(err) {
+			panic(err)
+		}
 	}
 
 	fmt.Printf("START:%q", port_name)
