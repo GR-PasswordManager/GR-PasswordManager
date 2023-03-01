@@ -45,6 +45,7 @@ func Terminal(){
 	if str != "dongle" {
 		log.Fatal("Dongle not found")
 	}
+	log.Println("dongle found")
 
 	// SAVE
 	checkSendSerialData(port, "save")

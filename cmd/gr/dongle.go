@@ -50,8 +50,11 @@ func Dongle(){
 				str = checkReceiveSerialData(port)
 			}
 
+			log.Printf("str:%s", str)
+
 			switch re.FindString(str) {
 				case "who":
+					log.Println("who")
 					// シリアル通信でデータを送信する
 					checkSendSerialData(port, "dongle")
 

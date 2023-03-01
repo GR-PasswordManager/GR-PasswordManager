@@ -109,8 +109,9 @@ func receiveSerialData(port serial.Port) (string, error) {
 
 func checkSendSerialData(port serial.Port, data string) {
 	str := ""
+	check := "tmp"
 
-	for "c_" + data != str {
+	for check != str {
 		// シリアル通信でデータを送信する
 		_, err := sendSerialData(port, data)
 		if err != nil {
@@ -125,6 +126,7 @@ func checkSendSerialData(port serial.Port, data string) {
 
 		log.Printf("str: %q\n", str)
 		log.Printf("data: %q\n", data)
+		check = "c_" + data
 	}
 
 	// シリアル通信でデータを送信する
@@ -135,8 +137,7 @@ func checkSendSerialData(port serial.Port, data string) {
 }
 
 func checkReceiveSerialData(port serial.Port) (string) {
-	str := ""
-
+	prev_str := ""
 	for {
 		// シリアル通信でデータを受信する
 		str, err := receiveSerialData(port)
@@ -144,8 +145,12 @@ func checkReceiveSerialData(port serial.Port) (string) {
 			log.Fatal(err)
 		}
 
+		if str == "" {
+			continue
+		}
+
 		if str == "OK" {
-			break
+			return prev_str
 		}
 
 		// シリアル通信でデータを送信する
@@ -153,6 +158,6 @@ func checkReceiveSerialData(port serial.Port) (string) {
 		if err != nil {
 			log.Fatal(err)
 		}
+		prev_str = str
 	}
-	return str
 }
