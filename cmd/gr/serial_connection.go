@@ -109,7 +109,6 @@ func receiveSerialData(port serial.Port) (string, error) {
 
 func checkSendSerialData(port serial.Port, data string) {
 	str := ""
-	re := regexp.MustCompile(`\[(.+?)\]`)
 
 	for data != ("c_" + str) {
 		// シリアル通信でデータを送信する
@@ -123,10 +122,6 @@ func checkSendSerialData(port serial.Port, data string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		str = re.FindString(str)
-		str = strings.Replace(str, "[", "", -1)
-		str = strings.Replace(str, "]", "", -1)
 
 		log.Printf("str: %q\n", str)
 		log.Printf("data: %q\n", data)
