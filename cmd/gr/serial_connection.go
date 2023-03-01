@@ -110,7 +110,7 @@ func receiveSerialData(port serial.Port) (string, error) {
 func checkSendSerialData(port serial.Port, data string) {
 	str := ""
 
-	for data != ("c_" + str) {
+	for "c_" + data != str {
 		// シリアル通信でデータを送信する
 		_, err := sendSerialData(port, data)
 		if err != nil {
