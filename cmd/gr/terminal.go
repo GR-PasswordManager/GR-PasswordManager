@@ -59,30 +59,8 @@ func Terminal(){
 		fmt.Printf("T_Received data: '%q'EOF\n", str)
 	}
 
-	sendStr := [...] string{"[test]", "[abc]"}
-	for i := 0; i <= 1; i++ {
-		// シリアル通信でデータを送信する
-		_, err = sendSerialData(port, sendStr[i])
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// シリアル通信でデータを受信する
-		str, err = receiveSerialData(port)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if !re.MatchString(str) {
-			i--
-		}
-
-		// 受信したデータの出力
-		fmt.Printf("T_Received data: '%q'\n", str)
-	}
-
 	// SAVE
-
+	str = ""
 	for !re.MatchString(str) {
 		// シリアル通信でデータを送信する
 		_, err = sendSerialData(port, "[save]")
@@ -97,6 +75,7 @@ func Terminal(){
 		}
 	}
 
+	str = ""
 	for !re.MatchString(str) {
 		// シリアル通信でデータを送信する
 		_, err = sendSerialData(port, "[1]")
@@ -111,6 +90,7 @@ func Terminal(){
 		}
 	}
 
+	str = ""
 	for !re.MatchString(str) {
 		// シリアル通信でデータを送信する
 		_, err = sendSerialData(port, "[share_abcdef]")
@@ -135,6 +115,7 @@ func Terminal(){
 
 	// PICK
 
+	str = ""
 	for !re.MatchString(str) {
 		// シリアル通信でデータを送信する
 		_, err = sendSerialData(port, "[pick]")
@@ -149,6 +130,7 @@ func Terminal(){
 		}
 	}
 
+	str = ""
 	for !re.MatchString(str) {
 		// シリアル通信でデータを送信する
 		_, err = sendSerialData(port, "[1]")
