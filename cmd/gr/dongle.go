@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"regexp"
 
 	"go.bug.st/serial"
 )
@@ -29,8 +28,7 @@ func Dongle(){
 		log.Fatal(err)
 	}
 
-	str := "" // 何かしらの文字列を入れておく
-	re := regexp.MustCompile(`\[.+?\]`)
+	str := ""
 
 	// ディレクトリ作成
 	dir := "share"
@@ -45,14 +43,12 @@ func Dongle(){
 
 	quit:
 		for {
-			for !re.MatchString(str) {
-				// シリアル通信でデータを受信する
-				str = checkReceiveSerialData(port)
-			}
+			// シリアル通信でデータを受信する
+			str = checkReceiveSerialData(port)
 
-			log.Printf("str:%s", str)
+			log.Printf("str_dongle:%s", str)
 
-			switch re.FindString(str) {
+			switch str {
 				case "who":
 					log.Println("who")
 					// シリアル通信でデータを送信する
@@ -96,20 +92,7 @@ func Dongle(){
 					}
 					defer file.Close()
 
-					str = ""
-					for !re.MatchString(str) {
-						// シリアル通信でデータを送信する
-						_, err = sendSerialData(port, string(share))
-						if err != nil {
-							log.Fatal(err)
-						}
-
-						// シリアル通信でデータを受信する
-						str, err = receiveSerialData(port)
-						if err != nil {
-							log.Fatal(err)
-						}
-					}
+					checkSendSerialData(port, string(share))
 
 					log.Println("pick complete")
 
@@ -118,7 +101,7 @@ func Dongle(){
 
 				default:
 					// 受信したデータの出力
-					fmt.Printf("D_Received data: '%q'EOF\n", re.FindAllString(str, -1))
+					fmt.Printf("D_Received data: '%q'EOF\n", str)
 			}
 			str = ""
 		}
